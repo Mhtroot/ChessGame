@@ -1,6 +1,8 @@
 //basic variables
 const gameBoard = document.querySelector('#gameBoard')
 const player = document.querySelector('#player')
+player.textContent = 'white'
+let playerTurn = 'white'
 const info = document.querySelector('#info-display')
 const pieces = [
     rook, knight, bishop, queen, king, bishop, knight, rook,
@@ -12,8 +14,19 @@ const pieces = [
     pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn,
     rook, knight, bishop, queen, king, bishop, knight, rook
 ]
-
+//getting start root or end root of pieces
+let startRoot, endRoot;
+let squares;
+loadGame();
 //eventListeners------------
+
+//drag and drop functionality
+squares.forEach(square=>{//for each square its gonna listen to an event
+    square.addEventListener('dragstart', dragStart)
+    square.addEventListener('dragover', dragOver)
+    square.addEventListener('drag', dragDrop)
+})
+
 
 //functions------------------
 function loadGame(){
@@ -44,8 +57,37 @@ function loadGame(){
         if (i>47)
             square.firstChild.firstChild.classList.add('white')
 
+        square.firstChild?.setAttribute('draggable', true)//making it draggable
         //add the squares to the game board
         gameBoard.appendChild(square)
     })
+    squares = document.querySelectorAll('#gameBoard .square')//getting the squares for event listening
 }
-loadGame();
+
+let draggedElement;
+function dragStart(e){
+    startRoot = e.target.parentNode.getAttribute('square-id')
+    draggedElement = e.target
+}
+function dragOver(e){
+    e.preventDefault();//preventing extra square finding
+}
+/*function dragDrop(e){
+    e.stopPropagation()
+    if (e.target.classList.contains('piece')){
+        e.target.parentNode.append(draggedElement)
+        e.target.remove()
+    }else
+        e.target.append(draggedElement)
+    changePlayer()
+}*/
+
+function changePlayer(){
+    if (player.textContent === 'white'){
+        player.textContent = 'black'
+        playerTurn = 'black'
+    }else{
+        player.textContent = 'white'
+        playerTurn = 'white'
+    }
+}
