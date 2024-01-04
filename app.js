@@ -16,3 +16,28 @@ const pieces = [
 //eventListeners------------
 
 //functions------------------
+function loadGame(){
+    pieces.forEach((piece, i) =>{
+        //creating colorful squares
+        const square = document.createElement('div')
+
+        square.setAttribute('square-id', i)//giving id to the squares
+        square.classList.add('square')
+        //paint the square
+        const row = Math.floor((63-i)/8) + 1//check which row we are in
+        if (row%2===0)
+            if (i%2===0)
+                square.classList.add('square-color')
+            else
+                square.classList.add('square-sec-color')
+        else
+            if (i%2===0)
+                square.classList.add('square-sec-color')
+            else
+                square.classList.add('square-color')
+
+        //add the squares to the game board
+        gameBoard.appendChild(square)
+    })
+}
+loadGame();

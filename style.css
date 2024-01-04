@@ -4,9 +4,9 @@
 #gameBoard{
     width: 320px;
     height: 320px;
-    background-color: #363C7E;
     display: flex;
     flex-wrap: wrap;
+    background-color: #363C7E;
 }
 
 .square {
@@ -21,7 +21,10 @@
 }
 
 .square-color{
-    background-color: #484C9D;
+    background-color: #8384EA;
 }
 
+.square-sec-color{
+    background-color: #514380;
+}
 
