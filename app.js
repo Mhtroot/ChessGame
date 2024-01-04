@@ -36,6 +36,14 @@ function loadGame(){
             else
                 square.classList.add('square-color')
 
+        //adding the pieces in to the board
+        square.innerHTML = piece
+        //change the color
+        if (i<16)
+            square.firstChild.firstChild.classList.add('black')
+        if (i>47)
+            square.firstChild.firstChild.classList.add('white')
+
         //add the squares to the game board
         gameBoard.appendChild(square)
     })

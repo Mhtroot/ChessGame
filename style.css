@@ -1,4 +1,4 @@
-*{
+body{
     background-color: #121c40;
 }
 #gameBoard{
@@ -28,3 +28,11 @@
     background-color: #514380;
 }
 
+/*svg uses fill to change the color*/
+.white{
+    fill: #DBD4E5;
+}
+
+.black{
+    fill: #262B43;
+}
