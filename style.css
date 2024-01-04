@@ -1,0 +1,27 @@
+*{
+    background-color: #121c40;
+}
+#gameBoard{
+    width: 320px;
+    height: 320px;
+    background-color: #363C7E;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.square {
+    height: 40px;
+    width: 40px;
+}
+
+.square svg{
+    height: 30px;
+    width: 30px;
+    margin: 5px;
+}
+
+.square-color{
+    background-color: #484C9D;
+}
+
+
