@@ -4,6 +4,7 @@ const player = document.querySelector('#player')
 player.textContent = 'white'
 let playerTurn = 'white'
 const info = document.querySelector('#info-display')
+const width = 8
 const pieces = [
     rook, knight, bishop, queen, king, bishop, knight, rook,
     pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn,
@@ -21,10 +22,10 @@ loadGame();
 //eventListeners------------
 
 //drag and drop functionality
-squares.forEach(square=>{//for each square its gonna listen to an event
+squares.forEach(square=>{//for each square it`s gonna listen to an event
     square.addEventListener('dragstart', dragStart)
     square.addEventListener('dragover', dragOver)
-    square.addEventListener('drag', dragDrop)
+    square.addEventListener('drop', dragDrop)
 })
 
 
@@ -34,7 +35,7 @@ function loadGame(){
         //creating colorful squares
         const square = document.createElement('div')
 
-        square.setAttribute('square-id', i)//giving id to the squares
+        square.setAttribute('square-id', (width*width -1)-i)//giving id to the squares
         square.classList.add('square')
         //paint the square
         const row = Math.floor((63-i)/8) + 1//check which row we are in
@@ -72,22 +73,64 @@ function dragStart(e){
 function dragOver(e){
     e.preventDefault();//preventing extra square finding
 }
-/*function dragDrop(e){
+function dragDrop(e){
     e.stopPropagation()
-    if (e.target.classList.contains('piece')){
-        e.target.parentNode.append(draggedElement)
-        e.target.remove()
-    }else
-        e.target.append(draggedElement)
-    changePlayer()
-}*/
+    let piece = e.target.classList.contains('piece') //the picked element is a piece
+        color = draggedElement.firstChild.classList.contains(playerTurn)//check if the color matches the player turn
+        opponent = playerTurn==='white'? 'black':'white'  //finding the opponent
+        opponentPiece = e.target.firstChild?.classList.contains(opponent)//piece is from the opponent
+        valid = isValid(e.target)
+    if (color){
+        if (opponentPiece && valid) {
+            e.target.parentNode.append(draggedElement)
+            e.target.remove()
+            changePlayer()
+            return
+        }else if (piece && !opponentPiece){
+            info.textContent = 'Can Not Move Here!!'
+            setTimeout(()=>{
+                info.textContent = ''
+            },3000)
+        }else if (valid) {
+            e.target.append(draggedElement)
+            changePlayer()
+            return;
+        }
+    }else {
+        info.textContent = 'Move not Valid!!'
+        setTimeout(()=>{
+            info.textContent = ''
+        },3000)
+    }
+}
 
 function changePlayer(){
     if (player.textContent === 'white'){
+        revertIds()
         player.textContent = 'black'
         playerTurn = 'black'
     }else{
+        reverseIds()
         player.textContent = 'white'
         playerTurn = 'white'
     }
+}
+
+function isValid(target){
+    const piece = draggedElement.getAttribute('id')
+        endRoot = Number(target.getAttribute('square-id')) || Number(target.parentNode.getAttribute('square-id'))
+        startRoot = Number(startRoot)
+}
+
+//changing the chess table
+function reverseIds(){
+    squares.forEach((square, i)=>{
+        square.setAttribute('square-id', (width*width -1)-i)
+    })
+}
+
+function revertIds(){
+    squares.forEach((square, i)=>{
+        square.setAttribute('square-id', i)
+    })
 }
