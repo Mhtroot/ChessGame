@@ -6,7 +6,7 @@ const king ='<div class="piece" id="king"><svg xmlns="http://www.w3.org/2000/svg
     pawn = '<div class="piece" id="pawn"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><path d="M215.5 224c29.2-18.4 48.5-50.9 48.5-88c0-57.4-46.6-104-104-104S56 78.6 56 136c0 37.1 19.4 69.6 48.5 88H96c-17.7 0-32 14.3-32 32c0 16.5 12.5 30 28.5 31.8L80 400H240L227.5 287.8c16-1.8 28.5-15.3 28.5-31.8c0-17.7-14.3-32-32-32h-8.5zM22.6 473.4c-4.2 4.2-6.6 10-6.6 16C16 501.9 26.1 512 38.6 512H281.4c12.5 0 22.6-10.1 22.6-22.6c0-6-2.4-11.8-6.6-16L256 432H64L22.6 473.4z"/></svg></div>'
 
 //------------------------moves
-
+let row = [0,7,8,15,16,23,24,31,32,39,40,47,48,55,56,63]
 // Handle other cases or return false if none of the conditions match
 function pawnMove(startRoot, endRoot){
     let start = [8,9,10,11,12,13,14,15]
@@ -24,17 +24,17 @@ function knightMove(startRoot, endRoot){
         return true
     else if (startRoot + width*2 - 1 === endRoot)
         return true
-    else if (startRoot + width - 2 === endRoot)
+    else if (startRoot + width - 2 === endRoot && !row.includes(endRoot))
         return true
-    else if (startRoot + width + 2 === endRoot)
+    else if (startRoot + width + 2 === endRoot && !row.includes(endRoot))
         return true
-    else if (startRoot - width*2 + 1 === endRoot)
+    else if (startRoot - width*2 + 1 === endRoot )
         return true
-    else if (startRoot - width*2 - 1 === endRoot)
+    else if (startRoot - width*2 - 1 === endRoot )
         return true
     else if (startRoot - width - 2 === endRoot)
         return true
-    else return startRoot - width + 2 === endRoot;
+    else return startRoot - width + 2 === endRoot && !row.includes(endRoot);
 }
 
 function rookMove(startRoot, endRoot){
@@ -68,7 +68,7 @@ function rookMove(startRoot, endRoot){
     else if(startRoot - width*7 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*6)}"]`).firstChild)
         return true
     //side
-    else if (startRoot + 1 === endRoot)
+    else if (startRoot + 1 === endRoot && !row.includes(endRoot))
         return true
     else if (startRoot + 2 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild)
         return true
