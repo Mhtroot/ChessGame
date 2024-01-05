@@ -101,15 +101,29 @@ function dragDrop(e){
             setTimeout(()=>{
                 info.textContent = ''
             },3000)
-            squareArray.pop().classList.remove('selected')
+            let squareElement = squareArray.pop().classList
+            if (squareElement.contains('selected'))
+                squareElement.remove('selected')
+            else if(squareElement.contains('end'))
+                squareElement.remove('end')
             return;
         }else if (valid) {
-            console.log('works')
             e.target.append(draggedElement)
             squareArray.push(e.target)
             highlight(squareArray)
             changePlayer()
             round++
+            return;
+        }else if (!valid){
+            info.textContent = draggedElement.getAttribute('id').toUpperCase() + ' Does Not Move Here!!'
+            setTimeout(()=>{
+                info.textContent = ''
+            },3000)
+            let squareElement = squareArray.pop().classList
+            if (squareElement.contains('selected'))
+                squareElement.remove('selected')
+            else if(squareElement.contains('end'))
+                squareElement.remove('end')
             return;
         }
     }else {
@@ -117,7 +131,11 @@ function dragDrop(e){
         setTimeout(()=>{
             info.textContent = ''
         },3000)
-        squareArray.pop().classList.remove('selected')
+        let squareElement = squareArray.pop().classList
+        if (squareElement.contains('selected'))
+            squareElement.remove('selected')
+        else if(squareElement.contains('end'))
+            squareElement.remove('end')
         return;
     }
 }
