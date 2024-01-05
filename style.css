@@ -49,3 +49,11 @@ path{
 .black{
     fill: #262B43;
 }
+
+.selected{
+    background-color: rgba(127, 255, 212, 0.66);
+}
+
+.end{
+    background-color: rgba(81, 138, 155, 0.66);
+}

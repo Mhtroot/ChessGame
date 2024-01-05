@@ -65,14 +65,19 @@ function loadGame(){
     squares = document.querySelectorAll('#gameBoard .square')//getting the squares for event listening
 }
 
-let draggedElement;
+let draggedElement,reset=0;
+const squareArray = []
 function dragStart(e){
     startRoot = e.target.parentNode.getAttribute('square-id')
     draggedElement = e.target
+    squareArray.push(draggedElement.parentNode)
 }
+
 function dragOver(e){
     e.preventDefault();//preventing extra square finding
 }
+
+let round=1;
 function dragDrop(e){
     e.stopPropagation()
     let piece = e.target.classList.contains('piece') //the picked element is a piece
@@ -80,20 +85,29 @@ function dragDrop(e){
         opponent = playerTurn==='white'? 'black':'white'  //finding the opponent
         opponentPiece = e.target.firstChild?.classList.contains(opponent)//piece is from the opponent
         valid = isValid(e.target)
+
     if (color){
         if (opponentPiece && valid) {
             e.target.parentNode.append(draggedElement)
             e.target.remove()
+            squareArray.push(e.target)
+            highlight(squareArray)
             changePlayer()
+            round++
             return
         }else if (piece && !opponentPiece){
             info.textContent = 'Can Not Move Here!!'
             setTimeout(()=>{
                 info.textContent = ''
             },3000)
+            squareArray.pop().classList.remove('selected')
+            return;
         }else if (valid) {
             e.target.append(draggedElement)
+            squareArray.push(e.target)
+            highlight(squareArray)
             changePlayer()
+            round++
             return;
         }
     }else {
@@ -101,7 +115,45 @@ function dragDrop(e){
         setTimeout(()=>{
             info.textContent = ''
         },3000)
+        squareArray.pop().classList.remove('selected')
+        return;
     }
+}
+
+function highlight(array){
+    console.log(array)
+    if (array[0].getAttribute('square-id') !== array[1].getAttribute('square-id')) {
+        if (round !== 1) {
+            if (array[0].classList.contains('selected'))
+                array[0].classList.remove('selected')
+            else
+                array[0].classList.remove('end')
+
+            if (array[1].classList.contains('end'))
+                array[1].classList.remove('end')
+            else
+                array[1].classList.contains('selected')
+            array.shift()
+            array.shift()
+            array[0].classList.add('selected')
+            array[1].classList.add('end')
+        }
+
+        array[0].classList.add('selected')
+        array[1].classList.add('end')
+
+    }else{
+        if (array[0].classList.contains('selected'))
+            array[0].classList.remove('selected')
+        else
+            array[0].classList.remove('end')
+
+        if (array[1].classList.contains('end'))
+            array[1].classList.remove('end')
+        else
+            array[1].classList.contains('selected')
+    }
+    console.log(array)
 }
 
 function changePlayer(){
