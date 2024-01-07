@@ -63,6 +63,21 @@ function loadGame(){
         gameBoard.appendChild(square)
     })
     squares = document.querySelectorAll('#gameBoard .square')//getting the squares for event listening
+
+    //creating x/y position for squares
+    let x=8,y=8;
+    squares.forEach((square,i)=>{
+        if ((i+1)%8===0){
+            square.setAttribute('pos-y',y)
+            y--
+            square.setAttribute('pos-x',x)
+            x=8
+        }else{
+            square.setAttribute('pos-y',y)
+            square.setAttribute('pos-x',x)
+            x--
+        }
+    })
 }
 
 let draggedElement,reset=0;
@@ -71,6 +86,7 @@ function dragStart(e){
     startRoot = e.target.parentNode.getAttribute('square-id')
     draggedElement = e.target
     squareArray.push(draggedElement.parentNode)
+    rootFinder(draggedElement)
 }
 
 function dragOver(e){
@@ -93,7 +109,7 @@ function dragDrop(e){
             squareArray.push(e.target)
             highlight(squareArray)
             changePlayer()
-
+            removeRootFinder()
             round++
             return
         }else if (piece && !opponentPiece){
@@ -106,13 +122,14 @@ function dragDrop(e){
                 squareElement.remove('selected')
             else if(squareElement.contains('end'))
                 squareElement.remove('end')
+            removeRootFinder()
             return;
         }else if (valid) {
             e.target.append(draggedElement)
             squareArray.push(e.target)
             highlight(squareArray)
             changePlayer()
-
+            removeRootFinder()
             round++
             return;
         }else if (!valid){
@@ -125,7 +142,7 @@ function dragDrop(e){
                 squareElement.remove('selected')
             else if(squareElement.contains('end'))
                 squareElement.remove('end')
-
+            removeRootFinder()
             return;
         }
     }else {
@@ -138,7 +155,7 @@ function dragDrop(e){
             squareElement.remove('selected')
         else if(squareElement.contains('end'))
             squareElement.remove('end')
-
+        removeRootFinder()
         return;
     }
 }
@@ -222,5 +239,63 @@ function reverseIds(){
 function revertIds(){
     squares.forEach((square, i)=>{
         square.setAttribute('square-id', i)
+    })
+}
+
+function rootFinder(piece){
+    let rootBegin = Number(piece.parentNode.getAttribute('square-id'))
+    let pieceColor = piece.firstChild.getAttribute('class')
+    squares.forEach(square=>{
+        console.log(square)
+        let rootEnd = Number(square.getAttribute('square-id'))
+        let squareColor;
+        if (square.firstChild)
+            squareColor = square.firstChild.firstChild.getAttribute('class')
+
+        switch (piece.getAttribute('id')) {
+            case 'pawn':
+                if (pawnMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                    square.style.backgroundColor = '#934853'
+                else if (pawnMove(rootBegin, rootEnd) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                break
+            case 'knight':
+                if (knightMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                    square.style.backgroundColor = '#934853'
+                else if (knightMove(rootBegin, rootEnd) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                break
+            case 'rook':
+                if (rookMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                    square.style.backgroundColor = '#934853'
+                else if (rookMove(rootBegin, rootEnd) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                break
+            case 'bishop':
+                if (bishopMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                    square.style.backgroundColor = '#934853'
+                else if (bishopMove(rootBegin, rootEnd) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                break
+            case 'queen':
+                if (queenMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                    square.style.backgroundColor = '#934853'
+                else if (queenMove(rootBegin, rootEnd) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                break
+            case 'king':
+                if (kingMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                    square.style.backgroundColor = '#934853'
+                else if (kingMove(rootBegin, rootEnd) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                break
+        }
+    })
+}
+
+function removeRootFinder(){
+    squares.forEach(square=>{
+        if (square.style.backgroundColor!=='')
+            square.style.backgroundColor=''
     })
 }
