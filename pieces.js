@@ -6,7 +6,8 @@ const king ='<div class="piece" id="king"><svg xmlns="http://www.w3.org/2000/svg
     pawn = '<div class="piece" id="pawn"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><path d="M215.5 224c29.2-18.4 48.5-50.9 48.5-88c0-57.4-46.6-104-104-104S56 78.6 56 136c0 37.1 19.4 69.6 48.5 88H96c-17.7 0-32 14.3-32 32c0 16.5 12.5 30 28.5 31.8L80 400H240L227.5 287.8c16-1.8 28.5-15.3 28.5-31.8c0-17.7-14.3-32-32-32h-8.5zM22.6 473.4c-4.2 4.2-6.6 10-6.6 16C16 501.9 26.1 512 38.6 512H281.4c12.5 0 22.6-10.1 22.6-22.6c0-6-2.4-11.8-6.6-16L256 432H64L22.6 473.4z"/></svg></div>'
 
 //------------------------moves
-let row = [0,7,8,15,16,23,24,31,32,39,40,47,48,55,56,63]
+let leftRow = [7,15,23,31,39,47,55,63]
+let rightRow = [0,8,16,24,32,40,48,56]
 // Handle other cases or return false if none of the conditions match
 function pawnMove(startRoot, endRoot){
     let start = [8,9,10,11,12,13,14,15]
@@ -14,27 +15,28 @@ function pawnMove(startRoot, endRoot){
         return true
     else if (startRoot+width === endRoot && !document.querySelector(`[square-id = '${startRoot + width}']`).firstChild)
         return true
-    else if (startRoot+width-1 === endRoot && document.querySelector(`[square-id = '${startRoot + width - 1}']`).firstChild)
+    else if (startRoot+width-1 === endRoot && !leftRow.includes(endRoot) && document.querySelector(`[square-id = '${startRoot + width - 1}']`).firstChild)
         return true
-    return(startRoot+width+1 === endRoot && document.querySelector(`[square-id = '${startRoot + width - 1}']`).firstChild)
+    else if ((startRoot+width+1 === endRoot && !rightRow.includes(endRoot) && document.querySelector(`[square-id = '${startRoot + width + 1}']`).firstChild))
+        return true
 }
 
 function knightMove(startRoot, endRoot){
-    if (startRoot + width*2 + 1 === endRoot)
+    if (startRoot + width*2 + 1 === endRoot && !rightRow.includes(endRoot) )
         return true
-    else if (startRoot + width*2 - 1 === endRoot)
+    else if (startRoot + width*2 - 1 === endRoot && !leftRow.includes(endRoot))
         return true
-    else if (startRoot + width - 2 === endRoot && !row.includes(endRoot))
+    else if (startRoot + width - 2 === endRoot && !leftRow.includes(endRoot))
         return true
-    else if (startRoot + width + 2 === endRoot && !row.includes(endRoot))
+    else if (startRoot + width + 2 === endRoot && !rightRow.includes(endRoot))
         return true
-    else if (startRoot - width*2 + 1 === endRoot )
+    else if (startRoot - width*2 + 1 === endRoot && !rightRow.includes(endRoot))
         return true
-    else if (startRoot - width*2 - 1 === endRoot )
+    else if (startRoot - width*2 - 1 === endRoot && !leftRow.includes(endRoot))
         return true
-    else if (startRoot - width - 2 === endRoot)
+    else if (startRoot - width - 2 === endRoot &&!leftRow.includes(endRoot))
         return true
-    else return startRoot - width + 2 === endRoot && !row.includes(endRoot);
+    else return startRoot - width + 2 === endRoot && !rightRow.includes(endRoot);
 }
 
 function rookMove(startRoot, endRoot){
@@ -68,226 +70,115 @@ function rookMove(startRoot, endRoot){
     else if(startRoot - width*7 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*6)}"]`).firstChild)
         return true
     //side
-    else if (startRoot + 1 === endRoot && !row.includes(endRoot))
+    else if (startRoot + 1 === endRoot && !rightRow.includes(endRoot))
         return true
-    else if (startRoot + 2 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild)
+    else if (startRoot + 2 === endRoot && !rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild)
         return true
-    else if (startRoot + 3 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild)
+    else if (startRoot + 3 === endRoot && !rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild)
         return true
-    else if (startRoot + 4 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild)
+    else if (startRoot + 4 === endRoot && !rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild)
         return true
-    else if (startRoot + 5 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild)
+    else if (startRoot + 5 === endRoot && !rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild)
         return true
-    else if (startRoot + 6 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 5)}"]`).firstChild)
+    else if (startRoot + 6 === endRoot && !rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 5)}"]`).firstChild)
         return true
-    else if (startRoot + 7 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 6)}"]`).firstChild)    //--
+    else if (startRoot + 7 === endRoot && !rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 6)}"]`).firstChild)    //--
         return true
-    else if (startRoot - 1 === endRoot)
+    else if (startRoot - 1 === endRoot &&!leftRow.includes(endRoot))
         return true
-    else if (startRoot - 2 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild)
+    else if (startRoot - 2 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild)
         return true
-    else if (startRoot - 3 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild)
+    else if (startRoot - 3 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild)
         return true
-    else if (startRoot - 4 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild)
+    else if (startRoot - 4 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild)
         return true
-    else if (startRoot - 5 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild)
+    else if (startRoot - 5 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild)
         return true
-    else if (startRoot - 6 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 5)}"]`).firstChild)
+    else if (startRoot - 6 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 5)}"]`).firstChild)
         return true
-    return startRoot - 7 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 6)}"]`).firstChild
-
+    else if(startRoot - 7 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 6)}"]`).firstChild)
+        return true
 }
 
 function bishopMove(startRoot, endRoot){
-    if(startRoot + width+1 === endRoot)
+    if(startRoot + width+1 === endRoot &&!rightRow.includes(endRoot))
         return true
-    else if (startRoot + width*2 + 2 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild)
+    else if (startRoot + width*2 + 2 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild)
         return true
-    else if (startRoot + width*3 + 3 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild)
+    else if (startRoot + width*3 + 3 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild)
         return true
-    else if (startRoot + width*4 + 4 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild)
+    else if (startRoot + width*4 + 4 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild)
         return true
-    else if (startRoot + width*5 + 5 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild)
+    else if (startRoot + width*5 + 5 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild)
         return true
-    else if (startRoot + width*6 + 6 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5+5)}"]`).firstChild)
+    else if (startRoot + width*6 + 6 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5+5)}"]`).firstChild)
         return true
-    else if (startRoot + width*7 + 7 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5+5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot+ width*6+6)}"]`).firstChild)
+    else if (startRoot + width*7 + 7 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5+5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot+ width*6+6)}"]`).firstChild)
         return true
-    else if (startRoot - width-1 === endRoot)
+    else if (startRoot - width-1 === endRoot &&!leftRow.includes(endRoot))
         return true
-    else if (startRoot - width*2 - 2 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild)
+    else if (startRoot - width*2 - 2 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild)
         return true
-    else if (startRoot - width*3 - 3 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild)
+    else if (startRoot - width*3 - 3 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild)
         return true
-    else if (startRoot - width*4 - 4 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild)
+    else if (startRoot - width*4 - 4 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild)
         return true
-    else if (startRoot - width*5 - 5 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild)
+    else if (startRoot - width*5 - 5 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild)
         return true
-    else if (startRoot - width*6 - 6 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5-5)}"]`).firstChild)
+    else if (startRoot - width*6 - 6 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5-5)}"]`).firstChild)
         return true
-    else if (startRoot - width*7 - 7 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5-5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot- width*6-6)}"]`).firstChild)
+    else if (startRoot - width*7 - 7 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5-5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot- width*6-6)}"]`).firstChild)
         return true
-    else if (startRoot - width+1 === endRoot)
+    else if (startRoot - width+1 === endRoot &&!rightRow.includes(endRoot))
         return true
-    else if (startRoot - width*2 + 2 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild)
+    else if (startRoot - width*2 + 2 === endRoot &&!rightRow.includes(endRoot) &&!document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild)
         return true
-    else if (startRoot - width*3 + 3 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild)
+    else if (startRoot - width*3 + 3 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild)
         return true
-    else if (startRoot - width*4 + 4 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild)
+    else if (startRoot - width*4 + 4 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild)
         return true
-    else if (startRoot - width*5 + 5 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild)
+    else if (startRoot - width*5 + 5 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild)
         return true
-    else if (startRoot - width*6 + 6 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5+5)}"]`).firstChild)
+    else if (startRoot - width*6 + 6 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5+5)}"]`).firstChild)
         return true
-    else if (startRoot - width*7 + 7 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5+5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot- width*6+6)}"]`).firstChild)
+    else if (startRoot - width*7 + 7 === endRoot &&!rightRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5+5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot- width*6+6)}"]`).firstChild)
         return true
-    else if (startRoot + width-1 === endRoot)
+    else if (startRoot + width-1 === endRoot &&!leftRow.includes(endRoot))
         return true
-    else if (startRoot + width*2 - 2 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild)
+    else if (startRoot + width*2 - 2 === endRoot &&!leftRow.includes(endRoot) &&!document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild)
         return true
-    else if (startRoot + width*3 - 3 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild)
+    else if (startRoot + width*3 - 3 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild)
         return true
-    else if (startRoot + width*4 - 4 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild)
+    else if (startRoot + width*4 - 4 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild)
         return true
-    else if (startRoot + width*5 - 5 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild)
+    else if (startRoot + width*5 - 5 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild)
         return true
-    else if (startRoot + width*6 - 6 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5-5)}"]`).firstChild)
+    else if (startRoot + width*6 - 6 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5-5)}"]`).firstChild)
         return true
-    return (startRoot + width*7 - 7 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5-5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot+ width*6-6)}"]`).firstChild)
+    return (startRoot + width*7 - 7 === endRoot &&!leftRow.includes(endRoot) && !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5-5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot+ width*6-6)}"]`).firstChild)
 }
 
 function queenMove(startRoot, endRoot){
-    if(startRoot + width === endRoot)
+    if (bishopMove(startRoot,endRoot) || rookMove(startRoot, endRoot))
         return true
-    else if(startRoot + width*2 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ width)}"]`).firstChild)
-        return true
-    else if(startRoot + width*3 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width * 2)}"]`).firstChild)
-        return true
-    else if (startRoot + width*4 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3)}"]`).firstChild)
-        return true
-    else if (startRoot + width*5 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4)}"]`).firstChild)
-        return true
-    else if (startRoot + width*6 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5)}"]`).firstChild)
-        return true
-    else if (startRoot + width*7 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*6)}"]`).firstChild)
-        return true
-    //--
-    else if (startRoot - width === endRoot)
-        return true
-    else if (startRoot - width*2 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width)}"]`).firstChild)
-        return true
-    else if (startRoot - width*3 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width * 2)}"]`).firstChild)
-        return true
-    else if (startRoot - width*4 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3)}"]`).firstChild)
-        return true
-    else if (startRoot - width*5 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4)}"]`).firstChild)
-        return true
-    else if (startRoot - width*6 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5)}"]`).firstChild)
-        return true
-    else if(startRoot - width*7 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*6)}"]`).firstChild)
-        return true
-    //side
-    else if (startRoot + 1 === endRoot)
-        return true
-    else if (startRoot + 2 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild)
-        return true
-    else if (startRoot + 3 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild)
-        return true
-    else if (startRoot + 4 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild)
-        return true
-    else if (startRoot + 5 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild)
-        return true
-    else if (startRoot + 6 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 5)}"]`).firstChild)
-        return true
-    else if (startRoot + 7 === endRoot && !document.querySelector(`[square-id = "${(startRoot+ 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ 6)}"]`).firstChild)    //--
-        return true
-    else if (startRoot - 1 === endRoot)
-        return true
-    else if (startRoot - 2 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild)
-        return true
-    else if (startRoot - 3 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild)
-        return true
-    else if (startRoot - 4 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild)
-        return true
-    else if (startRoot - 5 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild)
-        return true
-    else if (startRoot - 6 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 5)}"]`).firstChild)
-        return true
-    else if (startRoot - 7 === endRoot && !document.querySelector(`[square-id = "${(startRoot- 1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 5)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- 6)}"]`).firstChild)
-        return true
-    else if (startRoot + width+1 === endRoot)
-        return true
-    else if (startRoot + width*2 + 2 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild)
-        return true
-    else if (startRoot + width*3 + 3 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild)
-        return true
-    else if (startRoot + width*4 + 4 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild)
-        return true
-    else if (startRoot + width*5 + 5 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild)
-        return true
-    else if (startRoot + width*6 + 6 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5+5)}"]`).firstChild)
-        return true
-    else if (startRoot + width*7 + 7 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5+5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot+ width*6+6)}"]`).firstChild)
-        return true
-    else if (startRoot - width-1 === endRoot)
-        return true
-    else if (startRoot - width*2 - 2 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild)
-        return true
-    else if (startRoot - width*3 - 3 === endRoot && !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild)
-        return true
-    else if (startRoot - width*4 - 4 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild)
-        return true
-    else if (startRoot - width*5 - 5 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild)
-        return true
-    else if (startRoot - width*6 - 6 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5-5)}"]`).firstChild)
-        return true
-    else if (startRoot - width*7 - 7 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5-5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot- width*6-6)}"]`).firstChild)
-        return true
-    else if (startRoot - width+1 === endRoot)
-        return true
-    else if (startRoot - width*2 + 2 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild)
-        return true
-    else if (startRoot - width*3 + 3 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild)
-        return true
-    else if (startRoot - width*4 + 4 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild)
-        return true
-    else if (startRoot - width*5 + 5 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild)
-        return true
-    else if (startRoot - width*6 + 6 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5+5)}"]`).firstChild)
-        return true
-    else if (startRoot - width*7 + 7 === endRoot&& !document.querySelector(`[square-id = "${(startRoot- width+1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*2+2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*3+3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*4+4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot- width*5+5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot- width*6+6)}"]`).firstChild)
-        return true
-    else if (startRoot + width-1 === endRoot)
-        return true
-    else if (startRoot + width*2 - 2 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild)
-        return true
-    else if (startRoot + width*3 - 3 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild)
-        return true
-    else if (startRoot + width*4 - 4 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild)
-        return true
-    else if (startRoot + width*5 - 5 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild)
-        return true
-    else if (startRoot + width*6 - 6 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5-5)}"]`).firstChild)
-        return true
-    return (startRoot + width*7 - 7 === endRoot&& !document.querySelector(`[square-id = "${(startRoot+ width-1)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*2-2)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*3-3)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*4-4)}"]`).firstChild && !document.querySelector(`[square-id = "${(startRoot+ width*5-5)}"]`).firstChild&& !document.querySelector(`[square-id = "${(startRoot+ width*6-6)}"]`).firstChild)
 }
 
 function kingMove(startRoot, endRoot){
-    if (startRoot + 1 === endRoot) {
+    if (startRoot + 1 === endRoot &&!rightRow.includes(endRoot)) {
         return true;
-    } else if (startRoot - 1 === endRoot) {
+    } else if (startRoot - 1 === endRoot &&!leftRow.includes(endRoot)) {
         return true;
     } else if (startRoot - width === endRoot) {
         return true;
     } else if (startRoot + width === endRoot) {
         return true;
-    } else if (startRoot + width + 1 === endRoot) {
+    } else if (startRoot + width + 1 === endRoot &&!rightRow.includes(endRoot)) {
         return true;
-    } else if (startRoot + width - 1 === endRoot) {
+    } else if (startRoot + width - 1 === endRoot &&!leftRow.includes(endRoot)) {
         return true;
-    } else if (startRoot - width + 1 === endRoot) {
+    } else if (startRoot - width + 1 === endRoot &&!rightRow.includes(endRoot)) {
         return true;
-    } else if (startRoot - width - 1 === endRoot) {
+    } else if (startRoot - width - 1 === endRoot &&!leftRow.includes(endRoot)) {
         return true;
     }
 }
