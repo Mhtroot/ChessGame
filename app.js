@@ -16,7 +16,7 @@ const pieces = [
     rook, knight, bishop, queen, king, bishop, knight, rook
 ]
 //getting start root or end root of pieces
-let startRoot, endRoot;
+let startX, startY, endX, endY;
 let squares;
 loadGame();
 //eventListeners------------
@@ -80,12 +80,19 @@ function loadGame(){
     })
 }
 
-let draggedElement,reset=0;
+let draggedElement;
 const squareArray = []
+
 function dragStart(e){
-    startRoot = e.target.parentNode.getAttribute('square-id')
+    //gets start x/y pos
+    startX = e.target.parentNode.getAttribute('pos-x')
+    startY = e.target.parentNode.getAttribute('pos-y')
+
+    //save the element in an array for highlights
     draggedElement = e.target
     squareArray.push(draggedElement.parentNode)
+
+    //find the possible ways
     rootFinder(draggedElement)
 }
 
@@ -96,67 +103,108 @@ function dragOver(e){
 let round=1;
 function dragDrop(e){
     e.stopPropagation()
-    let piece = e.target.classList.contains('piece') //the picked element is a piece
-        color = draggedElement.firstChild.classList.contains(playerTurn)//check if the color matches the player turn
-        opponent = playerTurn==='white'? 'black':'white'  //finding the opponent
-        opponentPiece = e.target.firstChild?.classList.contains(opponent)//piece is from the opponent
-        valid = isValid(e.target)
 
-    if (color){
+    let piece = e.target.classList.contains('piece') //check if the picked element is a piece
+    let color = draggedElement.firstChild.classList.contains(playerTurn)//check if the color matches the player turn
+
+    let opponent = playerTurn==='white'? 'black':'white'  //finding the opponent
+    let opponentPiece = e.target.firstChild?.classList.contains(opponent)//check if the piece is from the opponent
+
+    let valid = isValid(e.target) //check if the move is correct
+
+    if (color){//checks if the player chooses the correct pieces and colors
+
+        //check if the movement is correct and the target is the opponent
         if (opponentPiece && valid) {
+            //removes the opponent
             e.target.parentNode.append(draggedElement)
             e.target.remove()
+
+            //add to array for highlighting
             squareArray.push(e.target)
             highlight(squareArray)
+
             changePlayer()
-            removeRootFinder()
+            removeRootFinder()//resets the root finder and color
             round++
-            return
+
         }else if (piece && !opponentPiece){
+            //checks if the piece is hitting the teammate
             info.textContent = 'Can Not Move Here!!'
             setTimeout(()=>{
                 info.textContent = ''
             },3000)
-            let squareElement = squareArray.pop().classList
-            if (squareElement.contains('selected'))
-                squareElement.remove('selected')
-            else if(squareElement.contains('end'))
-                squareElement.remove('end')
+
+            //deleting the color and the element that was saved in Stack[array]
+            while (squareArray.length!==2) {
+                let squareElement = squareArray.pop()
+                if (squareElement)
+                    break
+                else {
+                    if (squareElement.classList.contains('selected'))
+                        squareElement.classList.remove('selected')
+                    else if (squareElement.classList.contains('end'))
+                        squareElement.classList.remove('end')
+                }
+            }
+
             removeRootFinder()
-            return;
-        }else if (valid) {
+
+        }else if (valid) {//if the move was fine
             e.target.append(draggedElement)
+
+            //add to stack for highlighting
             squareArray.push(e.target)
             highlight(squareArray)
+
             changePlayer()
+
             removeRootFinder()
             round++
-            return;
+
         }else if (!valid){
             info.textContent = draggedElement.getAttribute('id').toUpperCase() + ' Does Not Move Here!!'
             setTimeout(()=>{
                 info.textContent = ''
             },3000)
-            let squareElement = squareArray.pop().classList
-            if (squareElement.contains('selected'))
-                squareElement.remove('selected')
-            else if(squareElement.contains('end'))
-                squareElement.remove('end')
+
+            //deleting the color and the element that was saved in Stack[array]
+            while (squareArray.length!==2) {
+                let squareElement = squareArray.pop()
+                if (squareElement)
+                    break
+                else {
+                    if (squareElement.classList.contains('selected'))
+                        squareElement.classList.remove('selected')
+                    else if (squareElement.classList.contains('end'))
+                        squareElement.classList.remove('end')
+                }
+            }
+
             removeRootFinder()
-            return;
+
         }
     }else {
-        info.textContent = 'Move not Valid!!'
+        //choosing the wrong color when it's not your turn
+        info.textContent = 'IT IS NOT YOUR TURN, ' + opponent.toUpperCase()
         setTimeout(()=>{
             info.textContent = ''
         },3000)
-        let squareElement = squareArray.pop().classList
-        if (squareElement.contains('selected'))
-            squareElement.remove('selected')
-        else if(squareElement.contains('end'))
-            squareElement.remove('end')
+
+        //deleting the color and the element that was saved in Stack[array]
+        while (squareArray.length!==2) {
+            let squareElement = squareArray.pop()
+            if (squareElement)
+                break
+            else {
+                if (squareElement.classList.contains('selected'))
+                    squareElement.classList.remove('selected')
+                else if (squareElement.classList.contains('end'))
+                    squareElement.classList.remove('end')
+            }
+        }
+
         removeRootFinder()
-        return;
     }
 }
 
@@ -209,85 +257,120 @@ function changePlayer(){
 }
 
 function isValid(target){
-    const piece = draggedElement.getAttribute('id')
-        endRoot = Number(target.getAttribute('square-id')) || Number(target.parentNode.getAttribute('square-id'))
-        startRoot = Number(startRoot)
+    const piece = draggedElement.getAttribute('id') ;
+
+    endX= Number(target.getAttribute('pos-x')) || Number(target.parentNode.getAttribute('pos-x'))
+    endY= Number(target.getAttribute('pos-y')) || Number(target.parentNode.getAttribute('pos-y'))
+    startX = Number(startX)
+    startY = Number(startY)
 
     switch (piece){
         case 'pawn':
-            return pawnMove(startRoot, endRoot)
+            return pawnMove(startX,startY,endX,endY)
         case 'knight':
-            return knightMove(startRoot,endRoot)
+            return knightMove(startX,startY,endX,endY)
         case 'rook':
-            return rookMove(startRoot,endRoot);
+            return rookMove(startX,startY,endX,endY);
         case 'bishop':
-            return bishopMove(startRoot,endRoot)
+            return bishopMove(startX,startY,endX,endY)
         case 'queen':
-            return queenMove(startRoot, endRoot)
+            return queenMove(startX,startY,endX,endY)
         case 'king':
-            return kingMove(startRoot, endRoot)
+            return kingMove(startX, startY, endX, endY)
     }
 }
 
-//changing the chess table
+//flipping the chess table
 function reverseIds(){
+    let x=8,y=8
     squares.forEach((square, i)=>{
         square.setAttribute('square-id', (width*width -1)-i)
+
+        if ((i+1)%8===0){
+            square.setAttribute('pos-y',y)
+            y--
+            square.setAttribute('pos-x',x)
+            x=8
+        }else{
+            square.setAttribute('pos-y',y)
+            square.setAttribute('pos-x',x)
+            x--
+        }
     })
 }
 
 function revertIds(){
+    let x=1,y=1;
     squares.forEach((square, i)=>{
         square.setAttribute('square-id', i)
+        if ((i+1)%8===0){
+            square.setAttribute('pos-y',y)
+            y++
+            square.setAttribute('pos-x',x)
+            x=1
+        }else{
+            square.setAttribute('pos-y',y)
+            square.setAttribute('pos-x',x)
+            x++
+        }
     })
 }
 
 function rootFinder(piece){
-    let rootBegin = Number(piece.parentNode.getAttribute('square-id'))
-    let pieceColor = piece.firstChild.getAttribute('class')
+    //get color piece
+    let pieceColor = piece.firstChild.getAttribute('class'),
+        startx = Number(startX),
+        starty = Number(startY)
+
     squares.forEach(square=>{
-        console.log(square)
-        let rootEnd = Number(square.getAttribute('square-id'))
+        //get pos-x/y for every square
+        let endx = Number(square.getAttribute('pos-x')) || Number(square.parentNode.getAttribute('pos-x')),
+            endy= Number(square.getAttribute('pos-y')) || Number(square.parentNode.getAttribute('pos-y'))
+
         let squareColor;
-        if (square.firstChild)
+        if (square.firstChild)//gets the piece's color if exist
             squareColor = square.firstChild.firstChild.getAttribute('class')
 
         switch (piece.getAttribute('id')) {
             case 'pawn':
-                if (pawnMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                if (pawnMove(startx, starty, endx, endy) && squareColor===pieceColor) {
                     square.style.backgroundColor = '#934853'
-                else if (pawnMove(rootBegin, rootEnd) && squareColor!==pieceColor)
-                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                }
+                else if (pawnMove(startx, starty, endx, endy) && squareColor!==pieceColor) {
+                    square.style.backgroundColor = 'rgba(213,250,118,0.4)'
+                }
                 break
             case 'knight':
-                if (knightMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                if (knightMove(startx, starty, endx, endy) && squareColor===pieceColor)
                     square.style.backgroundColor = '#934853'
-                else if (knightMove(rootBegin, rootEnd) && squareColor!==pieceColor)
+                else if (knightMove(startx, starty, endx, endy) && squareColor!==pieceColor)
                     square.style.backgroundColor = 'rgba(252,250,155,0.69)'
                 break
             case 'rook':
-                if (rookMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                if (rookMove(startx, starty, endx, endy) && squareColor===pieceColor)
                     square.style.backgroundColor = '#934853'
-                else if (rookMove(rootBegin, rootEnd) && squareColor!==pieceColor)
-                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                else if (rookMove(startx, starty, endx, endy) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(112,162,94,0.69)'
                 break
             case 'bishop':
-                if (bishopMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                if (bishopMove(startx, starty, endx, endy) && squareColor===pieceColor)
                     square.style.backgroundColor = '#934853'
-                else if (bishopMove(rootBegin, rootEnd) && squareColor!==pieceColor)
-                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                else if (bishopMove(startx, starty, endx, endy) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(134,133,45,0.69)'
                 break
             case 'queen':
-                if (queenMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                if (queenMove(startx, starty, endx, endy) && squareColor===pieceColor) {
                     square.style.backgroundColor = '#934853'
-                else if (queenMove(rootBegin, rootEnd) && squareColor!==pieceColor)
-                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                    return
+                }
+                else if (queenMove(startx, starty, endx, endy) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(130,215,42,0.44)'
                 break
             case 'king':
-                if (kingMove(rootBegin, rootEnd) && squareColor===pieceColor)
+                if (kingMove(startx, starty, endx, endy) && squareColor===pieceColor)
                     square.style.backgroundColor = '#934853'
-                else if (kingMove(rootBegin, rootEnd) && squareColor!==pieceColor)
-                    square.style.backgroundColor = 'rgba(252,250,155,0.69)'
+                else if (kingMove(startx, starty, endx, endy) && squareColor!==pieceColor)
+                    square.style.backgroundColor = 'rgba(133,208,74,0.56)'
                 break
         }
     })
