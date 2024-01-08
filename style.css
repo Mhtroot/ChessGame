@@ -1,12 +1,22 @@
-body{
+body {
     background-color: #121c40;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: "Century Gothic";
 }
-#gameBoard{
-    width: 320px;
-    height: 320px;
+
+#gameBoard {
+    width: 80vw;
+    height: 80vw;
+    max-width: 320px;
+    max-height: 320px;
     display: flex;
     flex-wrap: wrap;
     background-color: #363C7E;
+    position: relative;
 }
 
 .square {
@@ -56,4 +66,51 @@ path{
 
 .end{
     background-color: rgba(81, 138, 155, 0.66);
+}
+
+.left-square {
+    width: 32px;
+    height: 320px;
+    background-color: #6A6E95;
+}
+
+.right-square {
+    width: 32px;
+    height: 320px;
+    background-color: #554983;
+}
+
+.turn{
+    position: relative;
+    top: -200px;
+    right: 32px;
+    transform: translateX(-200%);
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+#info-display{
+    position: relative;
+    top: -180px;
+    left: 10px;
+    transform: translateX(-200%);
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+.space{
+    width: 10px;
+}
+
+.left-square svg{
+    width: 25px;
+    height: 17px;
+    margin: 3px;
+    position: relative;
+}
+.right-square svg{
+    width: 25px;
+    height: 17px;
+    margin: 3px;
+    position: relative;
 }

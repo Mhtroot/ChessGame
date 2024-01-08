@@ -93,7 +93,8 @@ function dragStart(e){
     squareArray.push(draggedElement.parentNode)
 
     //find the possible ways
-    rootFinder(draggedElement)
+    if (draggedElement.firstChild.classList.contains(playerTurn))//check if the color matches the player turn
+        rootFinder(draggedElement)
 }
 
 function dragOver(e){
@@ -118,6 +119,10 @@ function dragDrop(e){
         if (opponentPiece && valid) {
             //removes the opponent
             e.target.parentNode.append(draggedElement)
+
+            //the beaten piece will go to the column that is for the opponent
+            printBeatList(e.target)
+
             e.target.remove()
 
             //add to array for highlighting
