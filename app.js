@@ -15,6 +15,16 @@ const pieces = [
     pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn,
     rook, knight, bishop, queen, king, bishop, knight, rook
 ]
+/*const pieces = [
+    rook, knight, bishop, queen, king, bishop, knight, rook,
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    rook, knight, bishop, queen, king, bishop, knight, rook
+]*/
 //getting start root or end root of pieces
 let startX, startY, endX, endY;
 let squares;
@@ -57,6 +67,10 @@ function loadGame(){
             square.firstChild.firstChild.classList.add('black')
         if (i>47)
             square.firstChild.firstChild.classList.add('white')
+      /*if (i<8)
+            square.firstChild.firstChild.classList.add('black')
+        if (i>55)
+            square.firstChild.firstChild.classList.add('white')*/
 
         square.firstChild?.setAttribute('draggable', true)//making it draggable
         //add the squares to the game board
@@ -329,8 +343,8 @@ function rootFinder(piece){
 
     squares.forEach(square=>{
         //get pos-x/y for every square
-        let endx = Number(square.getAttribute('pos-x')) || Number(square.parentNode.getAttribute('pos-x')),
-            endy= Number(square.getAttribute('pos-y')) || Number(square.parentNode.getAttribute('pos-y'))
+        let endx = Number(square.getAttribute('pos-x')),
+            endy= Number(square.getAttribute('pos-y'))
 
         let squareColor;
         if (square.firstChild)//gets the piece's color if exist
@@ -364,12 +378,12 @@ function rootFinder(piece){
                     square.style.backgroundColor = 'rgba(134,133,45,0.69)'
                 break
             case 'queen':
-                if (queenMove(startx, starty, endx, endy) && squareColor===pieceColor) {
+                if (queenMove(startx, starty, endx, endy) && squareColor===pieceColor)
                     square.style.backgroundColor = '#934853'
-                    return
-                }
                 else if (queenMove(startx, starty, endx, endy) && squareColor!==pieceColor)
                     square.style.backgroundColor = 'rgba(130,215,42,0.44)'
+                else
+                    console.log(square)
                 break
             case 'king':
                 if (kingMove(startx, starty, endx, endy) && squareColor===pieceColor)

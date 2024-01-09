@@ -16,8 +16,8 @@ function printBeatList(beaten){
     const beat = document.createElement('div')
         beat.classList.add('beaten')
 
-    beat.setAttribute('pos-x', prevX)
-    beat.setAttribute('pos-y', prevY)
+    beat.setAttribute('last-pos-x', prevX)
+    beat.setAttribute('last-pos-y', prevY)
 
     //if the piece is black -> light list bcs it'll count for the white /and the opposite
     if (beaten.firstChild.classList.contains('black')){
@@ -140,6 +140,7 @@ function rookMove(startX, startY, endX, endY){
     if (startX-7===endX && startY===endY && !document.querySelector(`[pos-x = '${startX-1}'][pos-y = '${startY}']`).firstChild && !document.querySelector(`[pos-x = '${startX-2}'][pos-y = '${startY}']`).firstChild && !document.querySelector(`[pos-x = '${startX-3}'][pos-y = '${startY}']`).firstChild && !document.querySelector(`[pos-x = '${startX-4}'][pos-y = '${startY}']`).firstChild && !document.querySelector(`[pos-x = '${startX-5}'][pos-y = '${startY}']`).firstChild && !document.querySelector(`[pos-x = '${startX-6}'][pos-y = '${startY}']`).firstChild)
         return true
 
+    return false
 }
 
 function bishopMove(startX, startY, endX, endY){
