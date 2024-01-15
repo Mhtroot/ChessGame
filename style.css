@@ -114,3 +114,21 @@ path{
     margin: 3px;
     position: relative;
 }
+
+.white-timer{
+    position: relative;
+    top: -200px;
+    right: 0;
+    transform: translateX(-200%);
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+.black-timer{
+    position: relative;
+    top: -200px;
+    left: 250px;
+    transform: translateX(-200%);
+    color: #FFFFFF;
+    font-size: 16px;
+}

@@ -263,18 +263,108 @@ function highlight(array){
     /*console.log(array)*/
 }
 
+//timer function
+let timerWhite=30, timerBlack = 30, isWhitePaused = false, isBlackPaused = false, timer;
+function whiteTimer(){
+    timer = setInterval(()=> {
+        if (!isWhitePaused) {
+            if (timerWhite >= 0) {
+                stopTimer()
+                console.log('Black Wins')
+
+            }
+            showTimer(true, timerWhite)
+            console.log('white: '+timerWhite)
+            timerWhite--
+        }
+    }
+    ,1000)
+}
+
+function blackTimer(){
+    timer = setInterval(()=> {
+            if (!isBlackPaused) {
+                if (timerBlack >= 0) {
+                    stopTimer()
+                    console.log('White Wins')
+                    return
+                }
+                showTimer(false, timerBlack)
+                console.log('black: '+timerBlack)
+                timerBlack--
+            }
+        }
+        ,1000)
+}
+
+function stopTimer(){
+    document.querySelector('#white-number').textContent = '0'
+    document.querySelector('#black-number').textContent = '0'
+    setInterval(()=>
+            location.reload()
+        ,5000)
+}
+
+function pauseWhiteTimer(){
+    isWhitePaused = true
+}
+
+function pauseBlackTimer(){
+    isBlackPaused = true
+}
+
+function resumeWhiteTimer(){
+    isWhitePaused = false
+}
+
+function resumeBlackTimer(){
+    isBlackPaused = false
+}
+
+//---
 function changePlayer(){
     if (player.textContent === 'white'){
         revertIds()
         player.textContent = 'black'
         playerTurn = 'black'
+        pauseWhiteTimer()
+        resumeBlackTimer()
+        blackTimer()
     }else{
         reverseIds()
         player.textContent = 'white'
         playerTurn = 'white'
+        pauseBlackTimer()
+        resumeWhiteTimer()
+        whiteTimer()
     }
 }
 
+function showTimer(isWhite, targetTimer){
+    let number;
+    if (isWhite){
+        number = document.querySelector('#white-number')
+        if (targetTimer>20)
+            number.style.backgroundColor = '#529348'
+        if (targetTimer<20 && targetTimer>9)
+            number.style.backgroundColor = '#919348'
+        if (targetTimer<=9)
+            number.style.backgroundColor = '#934853'
+
+        number.textContent =targetTimer
+    }else{
+        number = document.querySelector('#black-number')
+        if (targetTimer>20)
+            number.style.backgroundColor = '#529348'
+        if (targetTimer<20 && targetTimer>9)
+            number.style.backgroundColor = '#919348'
+        if (targetTimer<=9)
+            number.style.backgroundColor = '#934853'
+
+        number.textContent =targetTimer
+    }
+}
+//---
 function isValid(target){
     const piece = draggedElement.getAttribute('id') ;
 
