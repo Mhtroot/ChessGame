@@ -28,6 +28,7 @@ const pieces = [
 //getting start root or end root of pieces
 let startX, startY, endX, endY;
 let squares;
+let timerWhite=30, timerBlack = 30, isWhitePaused = false, isBlackPaused = false, timer;
 loadGame();
 //eventListeners------------
 
@@ -40,7 +41,68 @@ squares.forEach(square=>{//for each square it`s gonna listen to an event
 
 
 //functions------------------
+
+//timer function
+function whiteTimer(){
+    if (timerWhite <= 0) {
+        stopTimer()
+        document.querySelector('#info-display').textContent = 'BLACK WINS!'
+        return
+    }
+    timer = setTimeout(()=> {
+            if (!isWhitePaused) {
+                whiteTimer()
+                showTimer(true, timerWhite)
+                timerWhite--
+            }
+        }
+        ,1000)
+}
+
+function blackTimer(){
+    if (timerBlack <= 0) {
+        stopTimer()
+        document.querySelector('#info-display').textContent = 'WHITE WINS!'
+        return
+    }
+    timer = setTimeout(()=> {
+            if (!isBlackPaused) {
+                blackTimer()
+                showTimer(false, timerBlack)
+                timerBlack--
+            }
+        }
+        ,1000)
+}
+
+function stopTimer(){
+    document.querySelector('#white-number').textContent = '0'
+    document.querySelector('#black-number').textContent = '0'
+    setInterval(()=>
+            location.reload()
+        ,5000)
+}
+
+function pauseWhiteTimer(){
+    isWhitePaused = true
+}
+
+function pauseBlackTimer(){
+    isBlackPaused = true
+}
+
+function resumeWhiteTimer(){
+    isWhitePaused = false
+}
+
+function resumeBlackTimer(){
+    isBlackPaused = false
+}
+
+//---
+
 function loadGame(){
+    whiteTimer()
     pieces.forEach((piece, i) =>{
         //creating colorful squares
         const square = document.createElement('div')
@@ -262,66 +324,7 @@ function highlight(array){
     }
     /*console.log(array)*/
 }
-
-//timer function
-let timerWhite=30, timerBlack = 30, isWhitePaused = false, isBlackPaused = false, timer;
-function whiteTimer(){
-    timer = setInterval(()=> {
-        if (!isWhitePaused) {
-            if (timerWhite >= 0) {
-                stopTimer()
-                console.log('Black Wins')
-
-            }
-            showTimer(true, timerWhite)
-            console.log('white: '+timerWhite)
-            timerWhite--
-        }
-    }
-    ,1000)
-}
-
-function blackTimer(){
-    timer = setInterval(()=> {
-            if (!isBlackPaused) {
-                if (timerBlack >= 0) {
-                    stopTimer()
-                    console.log('White Wins')
-                    return
-                }
-                showTimer(false, timerBlack)
-                console.log('black: '+timerBlack)
-                timerBlack--
-            }
-        }
-        ,1000)
-}
-
-function stopTimer(){
-    document.querySelector('#white-number').textContent = '0'
-    document.querySelector('#black-number').textContent = '0'
-    setInterval(()=>
-            location.reload()
-        ,5000)
-}
-
-function pauseWhiteTimer(){
-    isWhitePaused = true
-}
-
-function pauseBlackTimer(){
-    isBlackPaused = true
-}
-
-function resumeWhiteTimer(){
-    isWhitePaused = false
-}
-
-function resumeBlackTimer(){
-    isBlackPaused = false
-}
-
-//---
+//---------
 function changePlayer(){
     if (player.textContent === 'white'){
         revertIds()
