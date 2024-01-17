@@ -30,9 +30,31 @@ function printBeatList(beaten){
 
 }
 //------------------------moves
-
+let enPassant = false
 // Handle other cases or return false if none of the conditions match
 function pawnMove(startX, startY, endX, endY){
+    /*console.log(moves)*/
+    //en-passant move
+    if (moves.length!==0) {
+        if (startY > 4) {
+            if (moves[moves.length - 1].sourcePiece === 'pawn') {//checks if the opponent piece is pawn
+                if (moves[moves.length - 1].targetY - moves[moves.length - 1].sourceY === 2) {//if the opponent pawn moved two squares
+                    if (moves[moves.length - 1].targetY + 2 === endY) {//if the opponent and the player were in the same y-pos
+                        //if the pawn had a pawn opponent besides it
+                        if (startY+1 === endY && startX+1 === endX && document.querySelector(`[pos-x = '${startX+1}'][pos-y = '${startY}']`).firstChild.getAttribute('id')==='pawn') {
+                            //check if the piece beside is from the last move or not
+                            enPassant = true
+                            return true
+                        }
+                        if (startY+1 === endY && startX-1 === endX && document.querySelector(`[pos-x = '${startX-1}'][pos-y = '${startY}']`).firstChild.getAttribute('id')==='pawn') {
+                            enPassant = true
+                            return true
+                        }
+                    }
+                }
+            }
+        }
+    }
     //two-step move
     if (startY ===2 ){
         if(startY+1 === endY && startX===endX || startY+2 === endY && startX===endX)

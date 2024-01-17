@@ -15,6 +15,8 @@ const pieces = [
     pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn,
     rook, knight, bishop, queen, king, bishop, knight, rook
 ]
+
+let moves = []
 /*const pieces = [
     rook, knight, bishop, queen, king, bishop, knight, rook,
     '', '', '', '', '', '', '', '',
@@ -181,6 +183,15 @@ let round=1;
 function dragDrop(e){
     e.stopPropagation()
 
+    //create move records
+    let x = Number(startX),
+        y = Number(startY),
+        tx = Number(e.target.getAttribute('pos-x')),
+        ty = Number(e.target.getAttribute('pos-y')),
+        p = draggedElement.getAttribute('id')
+    let move = new Move(x,y,tx,ty,p,playerTurn)
+
+
     let piece = e.target.classList.contains('piece') //check if the picked element is a piece
     let color = draggedElement.firstChild.classList.contains(playerTurn)//check if the color matches the player turn
 
@@ -204,6 +215,9 @@ function dragDrop(e){
             //add to array for highlighting
             squareArray.push(e.target)
             highlight(squareArray)
+
+            //move added
+            moves.push(move)
 
             changePlayer()
             removeRootFinder()//resets the root finder and color
@@ -231,14 +245,29 @@ function dragDrop(e){
 
             removeRootFinder()
 
-        }else if (valid) {//if the move was fine
-            e.target.append(draggedElement)
+        }else if (valid) {
+            //if the move was fine
+
+            //enPassant move
+            if (enPassant){
+                e.target.append(draggedElement)//place the piece
+
+                printBeatList(document.querySelector(`[pos-x = '${tx}'][pos-y = '${ty-1}']`).firstChild)
+                document.querySelector(`[pos-x = '${tx}'][pos-y = '${ty-1}']`).firstChild.remove()
+
+                moves.push(move)
+                changePlayer()
+                enPassant = false
+            }else {
+                e.target.append(draggedElement)
+
+                moves.push(move)
+                changePlayer()
+            }
 
             //add to stack for highlighting
             squareArray.push(e.target)
             highlight(squareArray)
-
-            changePlayer()
 
             removeRootFinder()
             round++
@@ -287,6 +316,7 @@ function dragDrop(e){
 
         removeRootFinder()
     }
+    /*dataWrite()*/
 }
 
 function highlight(array){
