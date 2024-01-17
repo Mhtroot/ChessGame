@@ -253,17 +253,53 @@ function dragDrop(e){
                 e.target.append(draggedElement)//place the piece
 
                 printBeatList(document.querySelector(`[pos-x = '${tx}'][pos-y = '${ty-1}']`).firstChild)
+
                 document.querySelector(`[pos-x = '${tx}'][pos-y = '${ty-1}']`).firstChild.remove()
 
                 moves.push(move)
                 changePlayer()
                 enPassant = false
+            }else if (castling){//castling move
+                e.target.append(draggedElement)//place the piece
+
+                moves.push(move)
+
+                if (playerTurn === 'white'){
+                    if (tx>x){
+                        let selectedRook = document.querySelector(`[pos-x = '${8}'][pos-y = '${1}']`).firstChild
+
+                        document.querySelector(`[pos-x = '${5}'][pos-y = '${1}']`).appendChild(selectedRook)
+                        moves.push(new Move(8,1,5,1,'rook','white'))
+                    }else {
+                        let selectedRook = document.querySelector(`[pos-x = '${1}'][pos-y = '${1}']`).firstChild
+
+                        document.querySelector(`[pos-x = '${3}'][pos-y = '${1}']`).appendChild(selectedRook)
+                        moves.push(new Move(1,1,3,1,'rook','white'))
+                    }
+                }else{
+                    if (tx>x){
+                        let selectedRook = document.querySelector(`[pos-x = '${8}'][pos-y = '${1}']`).firstChild
+
+                        document.querySelector(`[pos-x = '${6}'][pos-y = '${1}']`).appendChild(selectedRook)
+                        moves.push(new Move(8,1,6,1,'rook','white'))
+                    }else {
+                        let selectedRook = document.querySelector(`[pos-x = '${1}'][pos-y = '${1}']`).firstChild
+
+                        document.querySelector(`[pos-x = '${4}'][pos-y = '${1}']`).appendChild(selectedRook)
+                        moves.push(new Move(1,1,4,1,'rook','white'))
+                    }
+                }
+
+                changePlayer()
+                castling=false
             }else {
                 e.target.append(draggedElement)
 
                 moves.push(move)
                 changePlayer()
             }
+
+
 
             //add to stack for highlighting
             squareArray.push(e.target)
@@ -505,8 +541,6 @@ function rootFinder(piece){
                     square.style.backgroundColor = '#934853'
                 else if (queenMove(startx, starty, endx, endy) && squareColor!==pieceColor)
                     square.style.backgroundColor = 'rgba(130,215,42,0.44)'
-                else
-                    console.log(square)
                 break
             case 'king':
                 if (kingMove(startx, starty, endx, endy) && squareColor===pieceColor)

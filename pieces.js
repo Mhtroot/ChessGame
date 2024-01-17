@@ -30,7 +30,7 @@ function printBeatList(beaten){
 
 }
 //------------------------moves
-let enPassant = false
+let enPassant = false, castling = false, check = false
 // Handle other cases or return false if none of the conditions match
 function pawnMove(startX, startY, endX, endY){
     /*console.log(moves)*/
@@ -238,6 +238,74 @@ function queenMove(startX, startY, endX, endY){
 }
 
 function kingMove(startX, startY, endX, endY){
+    //castling--
+    let whiteKingMove = false, blackKingMove = false, whiteLeftRook = false, whiteRightRook = false, blackLeftRook = false, blackRightRook = false
+    moves.forEach(move=>{
+        //check for white
+        if (move.sourceX === 4 && move.sourceY === 1)
+            whiteKingMove = true
+        if (move.sourceX === 1 && move.sourceY === 1 && move.sourceColor === 'white')
+            whiteRightRook = true
+        if (move.sourceX === 8 && move.sourceY === 1 && move.sourceColor === 'white')
+            whiteLeftRook = true
+
+        //check for black
+        if (move.sourceX === 5 && move.sourceY === 1)
+            blackKingMove = true
+        if (move.sourceX === 1 && move.sourceY === 1 && move.sourceColor === 'black')
+            blackRightRook = true
+        if (move.sourceX === 8 && move.sourceY === 1 && move.sourceColor === 'black')
+            blackLeftRook= true
+    })
+
+    //castling the white king
+    if (!whiteKingMove){
+        //left rook
+        if (!whiteLeftRook)
+            if (document.querySelector(`[pos-x='${8}'][pos-y='${1}']`).firstChild.getAttribute('id') === 'rook')
+                if (!document.querySelector(`[pos-x='${7}'][pos-y='${1}']`).firstChild)
+                    if (!document.querySelector(`[pos-x='${6}'][pos-y='${1}']`).firstChild)
+                        if (!document.querySelector(`[pos-x='${5}'][pos-y='${1}']`).firstChild)
+                            if (endY === 1 && endX === 6) {
+                                castling = true
+                                return true
+                            }
+
+        //right rook
+        if (!whiteRightRook)
+            if (document.querySelector(`[pos-x = '${1}'][pos-y = '${1}']`).firstChild.getAttribute('id') === 'rook')
+                if (!document.querySelector(`[pos-x = '${2}'][pos-y = '${1}']`).firstChild)
+                    if (!document.querySelector(`[pos-x = '${3}'][pos-y = '${1}']`).firstChild)
+                        if (endY === 1 && endX === 2) {
+                            castling = true
+                            return true
+                        }
+    }
+    //castling the black king
+    if (!blackKingMove){
+        //right rook
+        if (!blackRightRook)
+            if (document.querySelector(`[pos-x = '${1}'][pos-y = '${1}']`).firstChild.getAttribute('id') === 'rook')
+                if (!document.querySelector(`[pos-x = '${2}'][pos-y = '${1}']`).firstChild)
+                    if (!document.querySelector(`[pos-x = '${3}'][pos-y = '${1}']`).firstChild)
+                        if (!document.querySelector(`[pos-x = '${4}'][pos-y = '${1}']`).firstChild)
+                            if (endY === 1 && endX === 3) {
+                                castling = true
+                                return true
+                            }
+
+        //left rook
+        if (!blackLeftRook)
+            if (document.querySelector(`[pos-x = '${8}'][pos-y = '${1}']`).firstChild.getAttribute('id') === 'rook')
+                if (!document.querySelector(`[pos-x = '${6}'][pos-y = '${1}']`).firstChild)
+                    if (!document.querySelector(`[pos-x = '${7}'][pos-y = '${1}']`).firstChild)
+                        if (endY === 1 && endX === 7) {
+                            castling = true
+                            return true
+                        }
+    }
+
+
     //up
     if (startX===endX && startY+1===endY)
         return true
