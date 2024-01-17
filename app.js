@@ -41,6 +41,10 @@ squares.forEach(square=>{//for each square it`s gonna listen to an event
     square.addEventListener('drop', dragDrop)
 })
 
+//save game log
+document.querySelector('#button2').addEventListener('click', saveLog)
+//load game log
+document.querySelector('#button1').addEventListener('click', loadLog)
 
 //functions------------------
 
@@ -557,4 +561,128 @@ function removeRootFinder(){
         if (square.style.backgroundColor!=='')
             square.style.backgroundColor=''
     })
+}
+
+//---------
+function saveLog(){
+    if (playerTurn !== 'white'){
+        alert("only when it's white's turn you can save the game")
+        return;
+    }
+
+    let key = prompt('Enter a name to save:')
+
+    if (localStorage.getItem(key)) {
+        alert('THIS SAVE ALREADY EXISTS!')
+        return
+    }
+    let arrayOfPieces = []
+
+    squares.forEach(square=>{
+        //create object
+        let squareDetail = {
+            piece: null,
+            pieceColor: null,
+            getX: null,
+            getY: null,
+            getSquareId: null,
+            turn: playerTurn
+        }
+
+        if (square.firstChild){
+            squareDetail.piece = square.firstChild.getAttribute('id')
+            if (square.firstChild.firstChild.getAttribute('class') === 'white')
+                squareDetail.pieceColor = 'white'
+            else
+                squareDetail.pieceColor = 'black'
+        }
+
+        squareDetail.getX = Number(square.getAttribute('pos-x'))
+        squareDetail.getY = Number(square.getAttribute('pos-y'))
+        squareDetail.getSquareId = Number(square.getAttribute('square-id'))
+        arrayOfPieces.push(squareDetail)
+    })
+
+    arrayOfPieces.push(moves)
+    //add to localStorage
+    let array = JSON.stringify(arrayOfPieces)
+    localStorage.setItem(key, array)
+
+    if (localStorage.getItem(key))
+        alert('GAME SAVED SUCCESSFULLY!!')
+}
+
+function loadLog(){
+    let key = prompt('Enter the saved game name:')
+    let getLS = localStorage.getItem(key)
+
+    if (getLS ===null || getLS===''){
+        alert('GAME NOT FOUND')
+    }else {
+
+        let array = JSON.parse(getLS)
+        let newPieces = []
+
+        array.forEach((p,i)=>{
+            if (i<=63) {
+                if (!p.piece)
+                    newPieces.push('')
+                else {
+                    if (p.piece === 'pawn')
+                        newPieces.push(pawn)
+                    if (p.piece === 'knight')
+                        newPieces.push(knight)
+                    if (p.piece === 'rook')
+                        newPieces.push(rook)
+                    if (p.piece === 'bishop')
+                        newPieces.push(bishop)
+                    if (p.piece === 'queen')
+                        newPieces.push(queen)
+                    if (p.piece === 'king')
+                        newPieces.push(king)
+                }
+            }
+        })
+
+        newPieces.forEach((p,i)=>{
+            gameBoard.firstChild.remove()
+            //creating colorful squares
+            const s = document.createElement('div')
+
+            s.setAttribute('square-id', array[i].getSquareId)//giving id to the squares
+            s.classList.add('square')
+            //creating x/y position for squares
+            s.setAttribute('pos-y',array[i].getY)
+            s.setAttribute('pos-x',array[i].getY)
+            //paint the square
+            const row = Math.floor((63-i)/8) + 1//check which row we are in
+            if (row%2===0)
+                if (i%2===0)
+                    s.classList.add('square-color')
+                else
+                    s.classList.add('square-sec-color')
+            else
+            if (i%2===0)
+                s.classList.add('square-sec-color')
+            else
+                s.classList.add('square-color')
+
+            //adding the pieces in to the board
+            s.innerHTML = p
+
+            if (array[i].pieceColor === 'white'){
+                s.firstChild.firstChild.classList.add('white')
+            }
+            if (array[i].pieceColor === 'black'){
+                s.firstChild.firstChild.classList.add('black')
+            }
+
+            s.firstChild?.setAttribute('draggable', true)//making it draggable
+
+            //add the squares to the game board
+            gameBoard.appendChild(s)
+        })
+        squares = document.querySelectorAll('#gameBoard .square')//getting the squares for event listening
+        console.log(squares)
+    }
 }
